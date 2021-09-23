@@ -1,0 +1,11 @@
+#!/bin/sh
+
+sudo yum -y -q install ipmitool
+sudo modprobe ipmi_devintf
+sudo ipmitool user set password 2 password
+sudo ipmitool user enable 2
+sudo ipmitool lan print 1 | awk -v HOST=$(echo $HOSTNAME | sed 's/b/bm/g') '/MAC Address/ { print "host "HOST" { hardware ethernet "toupper($4)"; }"}'
+sudo ipmitool lan set 1 ipsrc static
+sudo ipmitool lan set 1 ipaddr 0.0.0.0
+sudo ipmitool lan set 1 ipsrc dhcp
+
